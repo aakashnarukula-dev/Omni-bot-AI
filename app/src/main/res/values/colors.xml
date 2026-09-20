@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="omni_black">#101214</color>
+    <color name="omni_white">#E7E4DE</color>
+    <color name="omni_panel">#1A1D21</color>
+    <color name="omni_raised">#25292E</color>
+    <color name="omni_muted">#999FA6</color>
+    <color name="omni_accent">#C8B38A</color>
+    <color name="omni_selection">#454039</color>
+    <color name="omni_outline">#30353B</color>
+</resources>

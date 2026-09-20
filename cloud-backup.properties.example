@@ -1,0 +1,8 @@
+# Firebase Android client configuration (not a service-account credential).
+# Copy to cloud-backup.properties after the dedicated backend is ready.
+# Keep bucket empty until Google sign-in and owner-only Storage rules are deployed.
+projectId=omni-bot-ai-personal
+appId=
+apiKey=
+bucket=
+webClientId=

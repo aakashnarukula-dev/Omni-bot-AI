@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rounded.AllInclusive from AndroidX Compose Material Icons 1.7.5.
+     Copyright 2024 The Android Open Source Project; Apache License 2.0.
+     https://www.apache.org/licenses/LICENSE-2.0
+     Matches the exact mark used by OmniMark on the unlock and chat screens. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- 68% of the launcher's central 72dp viewport, matching OmniMark's proportions. -->
+    <group android:scaleX="2.04" android:scaleY="2.04"
+        android:translateX="29.52" android:translateY="29.52">
+        <path android:fillColor="@color/omni_accent"
+            android:pathData="M20.22,6.86 c-2.0,-0.6,-4.06,-0.04,-5.39,1.29 L12.0,10.66 L10.48,12.0 h0.01 L7.8,14.39 c-0.81,0.81,-1.95,1.15,-3.12,0.92 c-1.25,-0.25,-2.28,-1.25,-2.57,-2.49 c-0.52,-2.23,1.16,-4.2,3.29,-4.2 c0.91,0.0,1.76,0.35,2.44,1.03 l0.47,0.41 c0.38,0.34,0.95,0.34,1.33,0.0 c0.45,-0.4,0.45,-1.1,0.0,-1.5 l-0.42,-0.36 C8.2,7.18,6.84,6.62,5.4,6.62 C2.42,6.62,0.0,9.04,0.0,12.0 s2.42,5.38,5.4,5.38 c1.44,0.0,2.8,-0.56,3.77,-1.53 l2.83,-2.5 l0.01,0.01 L13.52,12.0 h-0.01 l2.69,-2.39 c0.81,-0.81,1.95,-1.15,3.12,-0.92 c1.25,0.25,2.28,1.25,2.57,2.49 c0.52,2.23,-1.16,4.2,-3.29,4.2 c-0.9,0.0,-1.76,-0.35,-2.44,-1.03 l-0.48,-0.42 c-0.38,-0.34,-0.95,-0.34,-1.33,0.0 c-0.45,0.4,-0.45,1.1,0.0,1.5 l0.42,0.37 c1.02,1.01,2.37,1.57,3.82,1.57 c3.27,0.0,5.86,-2.9,5.33,-6.25 c-0.3,-1.99,-1.77,-3.69,-3.7,-4.26 z" />
+    </group>
+</vector>

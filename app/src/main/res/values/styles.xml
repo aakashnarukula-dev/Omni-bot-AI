@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Omni" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowBackground">@color/omni_black</item>
+        <item name="android:navigationBarColor">@color/omni_black</item>
+        <item name="android:statusBarColor">@color/omni_black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorAccent">@color/omni_accent</item>
+        <item name="android:colorBackground">@color/omni_black</item>
+        <item name="android:colorForeground">@color/omni_white</item>
+        <item name="android:textColorPrimary">@color/omni_white</item>
+        <item name="android:textColorSecondary">@color/omni_muted</item>
+        <item name="android:textColorHint">@color/omni_muted</item>
+    </style>
+    <style name="Theme.Omni.GoogleSignIn" parent="Theme.Omni">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+    <style name="Theme.Omni.Dialog" parent="android:style/Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">@color/omni_accent</item>
+        <item name="android:colorBackground">@color/omni_black</item>
+        <item name="android:colorForeground">@color/omni_white</item>
+        <item name="android:windowBackground">@color/omni_black</item>
+        <item name="android:textColorPrimary">@color/omni_white</item>
+        <item name="android:textColorSecondary">@color/omni_muted</item>
+        <item name="android:textColorPrimaryInverse">@color/omni_white</item>
+        <item name="android:textColorSecondaryInverse">@color/omni_muted</item>
+        <item name="android:textColorHint">@color/omni_muted</item>
+        <item name="android:colorControlNormal">@color/omni_white</item>
+        <item name="android:colorControlActivated">@color/omni_selection</item>
+        <item name="android:datePickerStyle">@style/Widget.Omni.DatePicker</item>
+        <item name="android:timePickerStyle">@style/Widget.Omni.TimePicker</item>
+    </style>
+    <style name="Widget.Omni.DatePicker" parent="android:style/Widget.Material.DatePicker">
+        <item name="android:headerBackground">@color/omni_panel</item>
+    </style>
+    <style name="Widget.Omni.TimePicker" parent="android:style/Widget.Material.TimePicker">
+        <item name="android:headerBackground">@color/omni_panel</item>
+        <item name="android:numbersTextColor">@color/omni_white</item>
+        <item name="android:numbersInnerTextColor">@color/omni_white</item>
+        <item name="android:numbersBackgroundColor">@color/omni_panel</item>
+        <item name="android:numbersSelectorColor">@color/omni_selection</item>
+    </style>
+</resources>

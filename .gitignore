@@ -1,0 +1,13 @@
+.gradle/
+local.properties
+**/build/
+captures/
+*.jks
+*.keystore
+signing.properties
+.signing/
+dist/
+cloud-backup.properties
+backend/node_modules/
+backend/*-debug.log
+backend/.firebase/

@@ -1,0 +1,30 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function owner(uid) {
+      return request.auth != null && request.auth.uid == uid
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.auth.token.email_verified == true;
+    }
+    match /keys/{uid}/backup-key-v1 {
+      allow get: if owner(uid);
+      allow create: if owner(uid) && resource == null
+        && request.resource.size == 32
+        && request.resource.contentType == 'application/octet-stream';
+      allow list, update, delete: if false;
+    }
+    match /backups/{uid}/{name} {
+      allow read: if owner(uid);
+      allow create: if owner(uid)
+        && resource == null
+        && name.matches('[a-f0-9-]{36}\\.omnibak')
+        && request.resource.size > 0
+        && request.resource.size <= 11811160064
+        && request.resource.contentType == 'application/octet-stream';
+      // Snapshots are immutable. Interrupted/new uploads cannot overwrite a good backup.
+      allow update: if false;
+      allow delete: if owner(uid);
+    }
+    match /{path=**} { allow read, write: if false; }
+  }
+}
