@@ -11,6 +11,7 @@ import com.gyftalala.omni.alarms.ClockAlarm
 import com.gyftalala.omni.alarms.ClockLaunch
 import com.gyftalala.omni.data.*
 import com.gyftalala.omni.reminders.ReminderScheduler
+import com.gyftalala.omni.reminders.ReminderActions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -343,13 +344,21 @@ class OmniViewModel @JvmOverloads constructor(application: Application, private 
         store.memories().firstOrNull { it.id == id }?.let { scheduleInternal(it, ParsedTime(at, repeat)) }
     }
     private fun scheduleInternal(memory: Memory, time: ParsedTime) {
-        val reminder = Reminder(memory.id, memory.title, time.at, repeat = time.repeat)
+        val reminder = Reminder(memory.id, memory.title, time.at, repeat = time.repeat,
+            kind = ReminderProfile.kind("${memory.title}\n${memory.text}"), callStyle = true, anchorAt = time.at)
         val exact = scheduler.schedule(reminder)
         val formatted = Instant.ofEpochMilli(time.at).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("EEE, d MMM 'at' h:mm a z"))
+        val recurrence = when {
+            time.repeat == "daily" -> ", repeating daily"
+            time.repeat == "weekdays" -> ", repeating on weekdays"
+            time.repeat == "weekends" -> ", repeating on weekends"
+            time.repeat.startsWith("weekly:") -> ", repeating every ${time.repeat.substringAfter(':').lowercase().replaceFirstChar(Char::uppercase)}"
+            else -> ""
+        }
         store.transaction {
             store.save(reminder)
             store.save(memory.copy(category = Category.REMINDER, question = null, status = formatted))
-            reply("I'll remind you: $formatted${if (time.repeat == "daily") ", repeating daily" else ""}." +
+            reply("I'll call you with a ${reminder.kind.label.lowercase()} reminder: $formatted$recurrence." +
                 (if (!exact) "\nEnable Alarms & reminders in Settings for precise delivery. Android may delay this reminder until then." else "") +
                 (if (!scheduler.notificationsAllowed()) "\nNotifications are off. Enable them in Settings to receive alerts outside the app." else ""), memory.id)
         }
@@ -357,10 +366,10 @@ class OmniViewModel @JvmOverloads constructor(application: Application, private 
     fun complete(id: String) = work {
         val memory = store.memories().firstOrNull { it.id == id } ?: return@work
         if (memory.status == "Done") return@work
-        scheduler.cancel(id)
-        store.reminders().firstOrNull { it.id == id }?.let { store.save(it.copy(completed = true)) }
-        store.save(memory.copy(status = "Done", question = null))
-        reply("Marked as done.", id)
+        if (store.reminders().none { it.id == id }) {
+            store.save(memory.copy(status = "Done", question = null))
+            reply("Marked as done.", id)
+        } else ReminderActions.complete(getApplication(), id)
     }
     fun restoreCompleted(id: String) = work {
         store.reminders().firstOrNull { it.id == id }?.let { store.save(it.copy(completed = false)) }

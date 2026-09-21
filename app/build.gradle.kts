@@ -26,8 +26,8 @@ android {
         manifestPlaceholders["omniAppName"] = if (isVerificationBuild) "Omni verification" else "Omni bot AI"
         minSdk = 26
         targetSdk = 34
-        versionCode = 20
-        versionName = "0.1.19"
+        versionCode = 21
+        versionName = "0.1.20"
         buildConfigField("boolean", "CLOUD_EMULATOR", cloudEmulator.toString())
         mapOf("PROJECT_ID" to "projectId", "APP_ID" to "appId", "API_KEY" to "apiKey", "BUCKET" to "bucket", "WEB_CLIENT_ID" to "webClientId").forEach { (field, key) ->
             val value = if (cloudEmulator) when (key) {

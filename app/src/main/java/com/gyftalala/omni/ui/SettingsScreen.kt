@@ -43,7 +43,7 @@ private fun modelLabel(id: String): String = id.split('-').joinToString(" ") {
     when (it.lowercase()) { "gemini" -> "Gemini"; "lite" -> "Lite"; else -> it.replaceFirstChar(Char::uppercaseChar) }
 }.replace("Flash Lite", "Flash-Lite")
 
-enum class PermissionScreen { NOTIFICATIONS, EXACT_ALARMS, MICROPHONE }
+enum class PermissionScreen { NOTIFICATIONS, EXACT_ALARMS, FULL_SCREEN, MICROPHONE }
 
 @Composable internal fun SettingsScreen(state: OmniState, dismiss: () -> Unit, model: OmniViewModel, lock: () -> Unit,
     openPermission: (PermissionScreen) -> Unit, openBackup: () -> Unit = {}, logOut: () -> Unit = {}) {
@@ -57,11 +57,13 @@ enum class PermissionScreen { NOTIFICATIONS, EXACT_ALARMS, MICROPHONE }
         android.Manifest.permission.RECORD_AUDIO) == android.content.pm.PackageManager.PERMISSION_GRANTED
     var microphone by remember { mutableStateOf(microphoneAllowed()) }
     var exactAlarms by remember { mutableStateOf(scheduler.exactAllowed()) }
+    var fullScreen by remember { mutableStateOf(scheduler.fullScreenAllowed()) }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     fun refreshPermissions() {
         microphone = microphoneAllowed()
         notifications = scheduler.notificationsAllowed()
         exactAlarms = scheduler.exactAllowed()
+        fullScreen = scheduler.fullScreenAllowed()
     }
     DisposableEffect(lifecycle) {
         val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) refreshPermissions() }
@@ -79,7 +81,7 @@ enum class PermissionScreen { NOTIFICATIONS, EXACT_ALARMS, MICROPHONE }
             SettingsRow(Icons.Rounded.AutoAwesome, "AI & connection", if (state.hasKey) "Gemini connected · ${modelLabel(state.model)}" else "No API key saved",
                 enabled = !state.busy && state.ready) { dialog = "ai" }
 
-            if (!notifications || !exactAlarms || !microphone) {
+            if (!notifications || !exactAlarms || !fullScreen || !microphone) {
                 Text("Permissions", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 30.dp, bottom = 4.dp))
                 if (!microphone) {
                     SettingsRow(Icons.Rounded.MicNone, "Allow microphone", "Required for voice typing") { openPermission(PermissionScreen.MICROPHONE) }
@@ -95,8 +97,14 @@ enum class PermissionScreen { NOTIFICATIONS, EXACT_ALARMS, MICROPHONE }
                     SettingsRow(Icons.Rounded.Alarm, "Allow precise reminders", "Required for on-time alerts") {
                         openPermission(PermissionScreen.EXACT_ALARMS)
                     }
-                    HorizontalDivider(color = Outline, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
+                    HorizontalDivider(color = Outline)
                 }
+                if (!fullScreen && Build.VERSION.SDK_INT >= 34) {
+                    SettingsRow(Icons.Rounded.Phone, "Allow reminder calls", "Required for full-screen reminder alerts") {
+                        openPermission(PermissionScreen.FULL_SCREEN)
+                    }
+                }
+                HorizontalDivider(color = Outline, modifier = Modifier.padding(top = 16.dp, bottom = 8.dp))
             }
             SettingsRow(Icons.Rounded.Backup, "Backup & restore", "Daily encrypted backup and recovery", enabled = !state.busy && state.ready, onClick = openBackup)
             HorizontalDivider(color = Outline)

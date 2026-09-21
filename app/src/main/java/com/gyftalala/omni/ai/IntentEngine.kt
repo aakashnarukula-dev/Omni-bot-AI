@@ -54,6 +54,7 @@ class IntentEngine {
         }
 
         if (!isImage && fileName == null && (reminderVerbs.containsMatchIn(clean) ||
+            (ReminderProfile.kind(clean) != com.gyftalala.omni.data.ReminderKind.TASK && TimeParser.parse(clean) != null) ||
             lower == "puja" || lower.startsWith("puja ") || lower.endsWith(" update")
         )) {
             return IntentResult(

@@ -74,6 +74,8 @@ class OmniStore(context: Context) : SQLiteOpenHelper(context, "omni.db", null, 1
     fun save(reminder: Reminder) = put("reminder:${reminder.id}", "reminder", JSONObject().apply {
         put("id", reminder.id); put("title", reminder.title); put("triggerAt", reminder.triggerAt); put("completed", reminder.completed)
         put("repeat", reminder.repeat); put("delivered", reminder.delivered)
+        put("kind", reminder.kind.name); put("callStyle", reminder.callStyle); put("anchorAt", reminder.anchorAt)
+        put("retryCount", reminder.retryCount); put("lastAction", reminder.lastAction)
     })
     fun reminders() = rows("reminder").map(::reminderFromJson)
     fun settings(): JSONObject = rows("settings").firstOrNull() ?: JSONObject()
@@ -104,5 +106,8 @@ internal fun messageFromJson(j: JSONObject) = ChatMessage(j.getString("id"), Rol
     j.getLong("createdAt"), attachmentId = j.optional("attachmentId"), action = j.optional("action"),
     fileIds = j.optJSONArray("fileIds")?.let { a -> (0 until a.length()).map(a::getString) })
 internal fun reminderFromJson(j: JSONObject) = Reminder(j.getString("id"), j.getString("title"), j.getLong("triggerAt"),
-    j.optBoolean("completed"), j.optString("repeat", "none"), j.optBoolean("delivered"))
+    j.optBoolean("completed"), j.optString("repeat", "none"), j.optBoolean("delivered"),
+    runCatching { ReminderKind.valueOf(j.optString("kind")) }.getOrDefault(ReminderKind.TASK),
+    j.optBoolean("callStyle", false), j.optLong("anchorAt", j.getLong("triggerAt")),
+    j.optInt("retryCount"), j.optString("lastAction", "scheduled"))
 private fun JSONObject.optional(key: String) = if (isNull(key) || !has(key)) null else getString(key)

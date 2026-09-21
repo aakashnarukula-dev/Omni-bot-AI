@@ -50,6 +50,17 @@ data class StoredAttachment(
     val createdAt: Long,
 )
 
+enum class ReminderKind(val label: String) {
+    MEDICINE("Medicine"),
+    APPOINTMENT("Appointment"),
+    PAYMENT("Bill or payment"),
+    EXERCISE("Exercise"),
+    MEAL("Meal"),
+    TASK("Task"),
+    WAKE_UP("Wake-up"),
+    CUSTOM("Custom"),
+}
+
 data class Reminder(
     val id: String,
     val title: String,
@@ -57,6 +68,12 @@ data class Reminder(
     val completed: Boolean = false,
     val repeat: String = "none",
     val delivered: Boolean = false,
+    val kind: ReminderKind = ReminderKind.TASK,
+    val callStyle: Boolean = false,
+    /** Original occurrence retained while a call is snoozed, so recurrence never drifts. */
+    val anchorAt: Long = triggerAt,
+    val retryCount: Int = 0,
+    val lastAction: String = "scheduled",
 )
 
 data class Attachment(val id: String, val name: String, val mime: String, val size: Long)

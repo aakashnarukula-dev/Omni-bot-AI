@@ -477,6 +477,9 @@ class MainActivity : FragmentActivity() {
             PermissionScreen.EXACT_ALARMS -> if (Build.VERSION.SDK_INT >= 31) launchExternal(error) {
                 permissionSettings.launch(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
             }
+            PermissionScreen.FULL_SCREEN -> if (Build.VERSION.SDK_INT >= 34) launchExternal(error) {
+                permissionSettings.launch(Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:$packageName")))
+            }
         }
     }
     private fun permissionReturned() {

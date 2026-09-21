@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
         }
         Spacer(Modifier.height(40.dp))
         Text("A few permissions", style = MaterialTheme.typography.headlineSmall)
-        Text("Enable voice typing and on-time reminders.", color = Muted, modifier = Modifier.padding(top = 10.dp, bottom = 24.dp))
+        Text("Enable voice typing and on-time reminder calls.", color = Muted, modifier = Modifier.padding(top = 10.dp, bottom = 24.dp))
         listOf(Icons.Rounded.MicNone to "Microphone for voice typing",
             Icons.Rounded.NotificationsNone to "Notifications for reminder alerts",
             Icons.Rounded.Alarm to "Alarms for precise reminder times").forEach { (icon, label) ->

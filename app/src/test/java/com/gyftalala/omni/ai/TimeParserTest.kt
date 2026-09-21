@@ -17,8 +17,19 @@ class TimeParserTest {
     @Test fun `unsupported dates never silently become today`() { assertNull(at("Sep 15 at 8 pm")); assertNull(at("12/09 at 8 pm")); assertNull(at("next week 8 pm")) }
     @Test fun `ISO date supported`() { assertEquals(ZonedDateTime.parse("2026-09-15T20:00:00+05:30[Asia/Kolkata]").toInstant().toEpochMilli(), at("2026-09-15 at 8 pm")) }
     @Test fun `daily repeat explicit`() { assertEquals("daily", TimeParser.parse("every day 8 am", now)?.repeat) }
+    @Test fun `weekday repeat explicit`() {
+        val parsed = TimeParser.parse("weekdays at 8 am", now)!!
+        assertEquals("weekdays", parsed.repeat)
+        assertEquals(ZonedDateTime.parse("2026-09-10T08:00:00+05:30[Asia/Kolkata]").toInstant().toEpochMilli(), parsed.at)
+    }
+    @Test fun `named day repeat explicit`() {
+        val parsed = TimeParser.parse("every Monday at 8 am", now)!!
+        assertEquals("weekly:MONDAY", parsed.repeat)
+        assertEquals(ZonedDateTime.parse("2026-09-14T08:00:00+05:30[Asia/Kolkata]").toInstant().toEpochMilli(), parsed.at)
+    }
     @Test fun `unsupported repeat rejected`() { assertNull(at("every month 8 pm")); assertNull(at("weekly 8 pm")) }
     @Test fun `new task not mistaken for time reply`() { assertFalse(TimeParser.isTimeReply("Call doctor tomorrow at 8 pm")); assertTrue(TimeParser.isTimeReply("tomorrow at 8 pm")) }
+    @Test fun `weekday schedule is accepted as follow-up`() { assertTrue(TimeParser.isTimeReply("weekdays at 8 am")) }
     @Test fun `zero relative time rejected`() { assertNull(at("in 0 minutes")) }
     @Test fun `conflicting relative and clock times need clarification`() { assertNull(at("in 2 days at 8 pm")); assertNull(at("every day in 20 minutes")) }
     @Test fun `DST nonexistent time rejected`() { assertNull(TimeParser.parse("2026-03-08 at 2:30 am", ZonedDateTime.parse("2026-03-07T12:00:00-05:00[America/New_York]"))) }

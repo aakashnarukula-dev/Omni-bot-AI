@@ -142,10 +142,25 @@ fun chooseTime(context: Context, initialAt: Long? = null, chosen: (Long) -> Unit
                         HorizontalDivider(Modifier.padding(horizontal = 18.dp), color = Outline)
                         Row(Modifier.padding(horizontal = 18.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Rounded.Repeat, null, Modifier.size(22.dp), tint = Muted)
-                            Text("Repeat daily", Modifier.weight(1f).padding(start = 14.dp), style = MaterialTheme.typography.bodyMedium)
+                            Text(when (reminder?.repeat) {
+                                "weekdays" -> "Repeat weekdays"
+                                "weekends" -> "Repeat weekends"
+                                else -> "Repeat daily"
+                            }, Modifier.weight(1f).padding(start = 14.dp), style = MaterialTheme.typography.bodyMedium)
                             Switch(daily, { enabled -> reminder?.let { schedule(it.triggerAt, if (enabled) "daily" else "none") } },
                                 enabled = reminder != null && !done && reminder.triggerAt > System.currentTimeMillis(),
                                 modifier = Modifier.testTag("reminder-repeat"))
+                        }
+                        reminder?.let {
+                            HorizontalDivider(Modifier.padding(horizontal = 18.dp), color = Outline)
+                            Row(Modifier.padding(horizontal = 18.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Rounded.NotificationsActive, null, Modifier.size(22.dp), tint = Accent)
+                                Column(Modifier.padding(start = 14.dp)) {
+                                    Text("${it.kind.label} · Reminder call", style = MaterialTheme.typography.bodyMedium)
+                                    Text("Done or remind again in 5, 15, 30, or 60 minutes", color = Muted,
+                                        style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(top = 3.dp))
+                                }
+                            }
                         }
                     }
                     if (done) Text("Completed", color = Mint, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 10.dp))

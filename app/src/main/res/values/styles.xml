@@ -21,6 +21,10 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowAnimationStyle">@null</item>
     </style>
+    <style name="Theme.Omni.ReminderCall" parent="Theme.Omni">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
     <style name="Theme.Omni.Dialog" parent="android:style/Theme.Material.Dialog.Alert">
         <item name="android:colorAccent">@color/omni_accent</item>
         <item name="android:colorBackground">@color/omni_black</item>

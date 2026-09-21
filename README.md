@@ -1,5 +1,13 @@
 # Omni bot AI
 
+## Version 0.1.20 — Remind Me inside Omni
+
+- Reminder creation now stays inside Chat and writes directly to Omni's encrypted Reminders collection. Messages such as `remind me to take my tablet every day at 8 pm` are classified locally as Medicine, Appointment, Bill or payment, Exercise, Meal, Task, Wake-up, or Custom reminders.
+- New reminders use a full-screen reminder-call experience with ringtone, vibration, lock-screen presentation, and spoken reminder text after Answer. The call screen and notification both support Done; the call screen also offers 5, 15, 30, and 60-minute deferrals.
+- Rejected, missed, busy, or incomplete reminder calls retry locally after five minutes. Snoozing never shifts the regular recurring schedule. Daily, weekday, weekend, and named-weekday recurrence work offline and restore after reboot.
+- Android 14's separate full-screen alert permission is shown in Settings when needed. Notification and precise-alarm permissions remain required. Existing reminders created by older Omni versions retain their original notification behavior.
+- The integrated reminder behavior is adapted from the owner's [`remind-me`](https://github.com/aakashnarukula-dev/remind-me) project. Its separate Admin/member apps, phone authentication, Firebase family sync, and generated Telugu audio are not duplicated; Omni's existing account, encrypted storage, and Android TTS remain the source of truth.
+
 ## Version 0.1.19 — personal categories and clearer interactions
 
 - Manual category choices become encrypted preference examples. “Order oats” and “Order seeds” both sort as Want to buy; explicit reminder wording or a time still creates a reminder. Existing explicit category corrections are recognized, and future corrections persist across restarts and encrypted backup/restore. Similar wording can follow one correction; broader action patterns require two consistent examples. Conflicting examples do not silently establish a broad rule. Deleting the source item removes its preference. This is personal classification memory, not Gemini model fine-tuning.
@@ -95,7 +103,7 @@ Local multi-item splitting and spoken-time normalization target English. Eligibl
 
 1. Copy `dist/Omni-bot-AI.apk` to your Android phone and open it. Allow installation from the app used to open the APK if Android asks. Android 8.0 or newer is required.
 2. Open **Omni bot AI**, review the initial permissions and sign in with Google. Only after sign-in, unlock with your device fingerprint, PIN, pattern or password. If the phone has no screen lock, set one in Android security settings first.
-3. In Omni **Settings**, enable notifications and precise alarms. Both are needed for timely background alerts.
+3. In Omni **Settings**, enable notifications, precise alarms, and reminder calls. They are needed for timely full-screen alerts.
 4. For cloud AI, get a [Gemini API key](https://aistudio.google.com/apikey), open **Settings > API key**, save it and turn on **Gemini AI**. The default model is `gemini-3.8-flash` and can be changed. Provider usage limits and charges apply to your key.
 
 No bundled Gemini API key or AI subscription. Optional cloud backup uses a separately configured Firebase project. Without a key, local sorting, OCR, storage, search and reminders still work. Harder visual classification needs Gemini or a category choice.
@@ -112,6 +120,8 @@ No bundled Gemini API key or AI subscription. Optional cloud backup uses a separ
 | `tomorrow at 8 pm`, after a reminder question | Schedules the pending task; confirms full date, time and timezone |
 | `in 20 minutes` | Schedules a pending task relative to now |
 | `every day at 8 am` | Schedules a daily reminder |
+| `remind me to take my tablet every Monday at 8 am` | Saves a Medicine reminder and schedules a weekly reminder call |
+| `pay rent on weekdays at 9 am` | Saves a Bill or payment reminder with a weekday schedule |
 | A product-page screenshot | Asks UX design or Want to buy when intent is unclear |
 | Card front and back photos | Combines photos into one encrypted card record; shows full extracted details |
 | `send me IndusInd debit card` | Returns its virtual card in chat, or explicitly says it is missing |
@@ -132,7 +142,7 @@ The Library searches titles, message text, filenames, categories and OCR. Open a
 - Encryption keys are not bound to an interactive biometric operation because the background receiver must read reminders while the app is closed. Device authentication gates interactive access; this is not a hardware-auth-bound password manager.
 - The Gemini key is encrypted locally and sent only to Google's API. Cloud mode is opt-in. Recognized cards and sensitive material bypass Gemini. Images without readable OCR require a category choice before cloud description. Detection is heuristic and can miss sensitive content: use dedicated Card import for cards, or keep cloud mode off for fully local handling.
 - Card images use Android Canvas, not a generative image model. Stored details and corrections remain exact.
-- Screenshots and app-switcher previews are temporarily enabled for this testing build at the owner's request. Build with `-PomniAllowScreenshots=false` to restore screenshot protection. Reminder text remains private on the lock screen. Camera cache files are removed after processing or camera cancellation. Leaving or locking the live scanner releases its camera and discards unsaved scan photos; ordinary chat drafts and tab selection are preserved.
+- Screenshots and app-switcher previews are temporarily enabled for this testing build at the owner's request. Build with `-PomniAllowScreenshots=false` to restore screenshot protection. The ordinary lock-screen notification hides reminder text, but an enabled full-screen reminder call shows the title so it can be acted on without opening Omni. Camera cache files are removed after processing or camera cancellation. Leaving or locking the live scanner releases its camera and discards unsaved scan photos; ordinary chat drafts and tab selection are preserved.
 - Android system backup and device transfer remain disabled. Omni’s optional daily encrypted cloud backup requires its dedicated backend, verified phone account and recovery password. Manual file backup is also available. Uninstalling or clearing app storage destroys this phone’s vault; recovery needs a completed external backup and its password.
 
 ## Encrypted backup and restore
@@ -155,7 +165,7 @@ Current backup limits: 16 MiB manifest, 50,000 records, 10,000 attachment refere
 - Image previews decode files up to 24 MB and downsample to at most 1,400 pixels per side. Unsupported, corrupt or larger images show a fallback; their original files remain exportable. Preview caching uses memory only, with no plaintext thumbnail files.
 - Shopping URLs are stored and detected by domain; the app does not scrape pages, fetch prices or purchase anything. Image AI describes the first image of a multi-image message; OCR scans all images. Mixed unrelated files become one memory, so send separate messages for different subjects.
 - Retrieval matches local words across stored content, rather than using embeddings. It supports the documented request forms and category searches. It does not answer arbitrary general-knowledge questions.
-- Time parsing supports relative minutes/hours/days, AM/PM or 24-hour times, tomorrow, weekdays, ISO dates and daily repetition. Ambiguous dates, unsupported recurrence and vague times need clarification or the date/time picker.
+- Time parsing supports relative minutes/hours/days, AM/PM or 24-hour times, tomorrow, weekdays, ISO dates, daily, weekday, weekend, and named-weekday repetition. Ambiguous dates, monthly recurrence and vague times need clarification or the date/time picker.
 - Stored reminders restore after normal process death, reboot and package updates. After reboot, the first device unlock must make encrypted storage available. Android force-stop disables delivery until reopening the app. Exact-alarm permission, notifications, OEM battery rules and device availability affect delivery. Denied precise alarms use a potentially delayed fallback with an explicit notice.
 - SQLite, encryption, OCR and network operations run off the main thread. Inputs persist before AI processing; images are downsampled; file copying is bounded. Search decrypts records on the IO dispatcher; very large libraries will need an encrypted search index and pagination.
 - Live Gemini 3.8 Flash text classification passed on the phone in 1.8 seconds for the synthetic connection-check sample. Broader multimodal accuracy and sustained latency remain unmeasured. Local phone measurements appear in VERIFICATION.md.
@@ -202,7 +212,7 @@ See [GEMINI-MODELS.md](GEMINI-MODELS.md) for the current official model review, 
 - `data/`: encrypted SQLite repository and domain models.
 - `security/`: Keystore and encrypted attachment vault.
 - `sharing/`: memory-only card PNGs and temporary read-only content grants.
-- `reminders/`: AlarmManager, notifications and reboot recovery.
+- `reminders/`: AlarmManager, reminder calls, snooze/retry actions and reboot recovery.
 - `cloud/`: verified phone login, encrypted cloud transfer, recovery and WorkManager scheduling.
 - `backend/`: owner-only Storage rules and emulator access tests.
 - `ui/`: Compose screens and deterministic card PNG rendering.

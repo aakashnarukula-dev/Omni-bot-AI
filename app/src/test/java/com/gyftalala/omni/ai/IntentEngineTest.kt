@@ -26,6 +26,11 @@ class IntentEngineTest {
         assertEquals(Category.REMINDER, engine.classify("call Sujatha madam").category)
     }
 
+    @Test fun `typed reminder category with a schedule becomes reminder`() {
+        assertEquals(Category.REMINDER, engine.classify("take medicine every Monday at 8 pm").category)
+        assertEquals(Category.REMINDER, engine.classify("doctor appointment tomorrow at 10 am").category)
+    }
+
     @Test fun `amazon link becomes product`() {
         assertEquals(Category.PRODUCT, engine.classify("https://amazon.in/dp/B012345").category)
     }
